@@ -33,18 +33,35 @@ umount -l : Unmounts storage forcibly.
 
 modprobe는 의존성을 고려하여 리눅스 커널에 모듈을 로드하는 명령어다. 의존성이 있는 모듈들이 있다면 해당 모듈까지 한꺼번에 같이 로드하는 특징이 있다.
 
-* g_mass_storage
+* g_mass_storage: Mass Storage Gadget (or MSG) acts as a USB Mass Storage device
 
-  1) file: path to files or block devices used for backing storage (
-  2) 
-  
-  * Beware: that if a file is used as a backing storage, it may not be modified by any other process. This is because the host assumes the data does not change without its knowledge. It may be  read, but (if the logical unit is writable) due to buffering on the host side, the contents are not well defined.
+  1) file: path to files or block devices used for backing storage. (Beware: that if a file is used as a backing storage, it may not be modified by any other process. This is because the host assumes the data does not change without its knowledge. It may be  read, but (if the logical unit is writable) due to buffering on the host side, the contents are not well defined.
+  2) removable: either "y", "Y" or "1" for true or "n", "N" or "0" for false. (Beware: "removable" means the logical unit's media can be  ejected or removed (as is true for a CD-ROM drive or a card reader).  It does *not* mean that the entire gadget can be unplugged from the host; the proper term for that is "hot-unpluggable".
+  3) ro: Specifies whether each logical unit should be reported as read only.
+  4) stall: Specifies whether the gadget is allowed to halt bulk endpoints. It's usually true.
+
+* fuser: Checks which process is occupying a file.
+
+  1) k: Kill all the processes related to a file.
+  2) v: Get detail information about processes and users related to a file.
 
 ### Usage
 
 #### To emulate a mass storage device
 
+* [g_mass_storage(MSG) Document](https://www.kernel.org/doc/Documentation/usb/mass-storage.txt)
+
 <pre>
 sudo modprobe g_mass_storage file={Storage File} stall=0 ro=0 removable=1
 sudo modprobe g_mass_storage -r: Removes mass storage module
 </pre>
+
+#### How to change USB image dynamically
+
+<pre>
+sudo bash -c 'echo "/home/pi/usbdisk2.img" > /sys/devices/platform/soc/20980000.usb/gadget/lun0/file'
+</pre>
+
+### Issue
+
+* Cache Coherence Problem: When Rasberry Pi provides mass storage to a host, if Rasberry Pi and host computer write the same file simultaneously, the file is corrupted. But if only Rasberry Pi writes the file, after reconneting, the host computer can read the file well. In other words, a file is used as a backing storage, it may not  be modified by any other process.
