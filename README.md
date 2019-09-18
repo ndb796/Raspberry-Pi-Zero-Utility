@@ -1,6 +1,6 @@
-### Raspberry Pi Zero Utility
+## Raspberry Pi Zero Utility
 
-## 기본 내용 정리
+### 기본 내용 정리
 
 * USB Gadget Mode: Makes a Linux system look like a USB device to a host computer. It can provide many USB devices: a serial connection, ethernet over USB, keyboard emulation, etc.
 
@@ -27,4 +27,24 @@ USB 가젯 모드란, 리눅스 시스템을 호스트 컴퓨터의 입장에서
 df -h: Get information of all mounted file systems.
 mount -a: Mounts all mount points.
 umount -l : Unmounts storage forcibly.
+</pre>
+
+* modprobe: Add/Remove a LKM(Loadable Kernel Module) to the Linux Kernel
+
+modprobe는 의존성을 고려하여 리눅스 커널에 모듈을 로드하는 명령어다. 의존성이 있는 모듈들이 있다면 해당 모듈까지 한꺼번에 같이 로드하는 특징이 있다.
+
+* g_mass_storage
+
+  1) file: path to files or block devices used for backing storage (
+  2) 
+  
+  * Beware: that if a file is used as a backing storage, it may not be modified by any other process. This is because the host assumes the data does not change without its knowledge. It may be  read, but (if the logical unit is writable) due to buffering on the host side, the contents are not well defined.
+
+### Usage
+
+#### To emulate a mass storage device
+
+<pre>
+sudo modprobe g_mass_storage file={Storage File} stall=0 ro=0 removable=1
+sudo modprobe g_mass_storage -r: Removes mass storage module
 </pre>
