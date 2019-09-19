@@ -56,10 +56,25 @@ sudo modprobe g_mass_storage file={Storage File} stall=0 ro=0 removable=1
 sudo modprobe g_mass_storage -r: Removes mass storage module
 </pre>
 
-#### How to change USB image dynamically
+#### To change USB image dynamically
 
 <pre>
 sudo bash -c 'echo "/home/pi/usbdisk2.img" > /sys/devices/platform/soc/20980000.usb/gadget/lun0/file'
+</pre>
+
+#### To make a container file and mount the container file
+
+<pre>
+# Make a container file
+sudo dd bs=1M if=/dev/zero of=./usbdisk2.img count=64
+sudo mkdosfs ./usbdisk2.img -F 32 -I
+# Setting for mounting
+sudo mkdir /mnt/usb_share2
+sudo vi /etc/fstab
+# Append the line below to the end of the file:
+/home/pi/usbdisk2.img /mnt/usb_share2 vfat users,umask=000 0 2
+# Mount
+sudo mount -a
 </pre>
 
 ### Issue
