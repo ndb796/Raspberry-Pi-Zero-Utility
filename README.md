@@ -80,3 +80,5 @@ sudo mount -a
 ### Issue
 
 * Cache Coherence Problem: When Rasberry Pi provides mass storage to a host, if Rasberry Pi and host computer write the same file simultaneously, the file is corrupted. But if only Rasberry Pi writes the file, after reconneting, the host computer can read the file well. In other words, a file is used as a backing storage, it may not  be modified by any other process.
+
+* If the mounting (/mnt/usb_share) doesn't work at the right time due to 'busy' or dummy data, the **reboot** is required.
